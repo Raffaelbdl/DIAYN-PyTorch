@@ -1,10 +1,7 @@
-# from mujoco_py.generated import const
-from mujoco_py import GlfwContext
 import cv2
 import numpy as np
 import os
 
-GlfwContext(offscreen=True)
 
 
 class Play:
@@ -28,12 +25,12 @@ class Play:
 
         for z in range(self.n_skills):
             video_writer = cv2.VideoWriter(f"Vid/skill{z}" + ".avi", self.fourcc, 50.0, (250, 250))
-            s = self.env.reset()
+            s, _ = self.env.reset()
             s = self.concat_state_latent(s, z, self.n_skills)
             episode_reward = 0
             for _ in range(self.env.spec.max_episode_steps):
                 action = self.agent.choose_action(s)
-                s_, r, done, _ = self.env.step(action)
+                s_, r, done, _, _ = self.env.step(action)
                 s_ = self.concat_state_latent(s_, z, self.n_skills)
                 episode_reward += r
                 if done:
